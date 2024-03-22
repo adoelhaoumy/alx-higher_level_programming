@@ -1,29 +1,19 @@
 #!/usr/bin/python3
-"""gets all states via python
-"""
+"""Lists states"""
 
-
-def main(args):
-    """gets all state
-    """
-    db = MySQLdb.connect(
-        host='localhost',
-        user=args[1],
-        passwd=args[2],
-        db=args[3])
-    cur = db.cursor()
-    query = (
-        "SELECT * FROM states "
-        "WHERE name LIKE BINARY '{}%' "
-        "ORDER BY id ASC"
-    ).format(args[4])
-    cur.execute(query)
-    states = cur.fetchall()
-    for state in states:
-        print(state)
-
+import MySQLdb
+from sys import argv
 
 if __name__ == "__main__":
-    import MySQLdb
-    import sys
-    main(sys.argv)
+    conn = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
+                           passwd=argv[2], db=argv[3], charset="utf8")
+    cur = conn.cursor()
+    query = """
+SELECT * FROM states WHERE name LIKE BINARY '{}' ORDER BY states.id ASC"""
+    query = query.format(argv[4])
+    cur.execute(query)
+    query_rows = cur.fetchall()
+    for row in query_rows:
+        print(row)
+    cur.close()
+    conn.close()

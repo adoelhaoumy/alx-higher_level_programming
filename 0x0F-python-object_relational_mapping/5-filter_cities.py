@@ -1,32 +1,19 @@
 #!/usr/bin/python3
-"""
-takes in the name of a state as an argument
-and lists all cities of that state
-"""
+"""Lists states"""
 
-
-def main(args):
-    """ All cities by state
-    """
-    db = MySQLdb.connect(
-        host='localhost',
-        user=args[1],
-        passwd=args[2],
-        db=args[3])
-    cur = db.cursor()
-    query = (
-        "SELECT c.name "
-        "FROM cities c "
-        "JOIN states s ON s.id = c.state_id "
-        "WHERE s.name = %s "
-        "ORDER BY c.id ASC"
-    )
-    cur.execute(query, (args[4],))
-    states = cur.fetchall()
-    print(", ".join(map(lambda x: "%s" % x, states)))
-
+import MySQLdb
+from sys import argv
 
 if __name__ == "__main__":
-    import MySQLdb
-    import sys
-    main(sys.argv)
+    conn = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
+                           passwd=argv[2], db=argv[3], charset="utf8")
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT cities.name FROM cities
+        JOIN states ON cities.state_id = states.id
+        WHERE states.name = %s
+        ORDER BY cities.id ASC
+        """, (argv[4], ))
+    print(", ".join(map(lambda x: x[0], cur.fetchall())))
+    cur.close()
+    conn.close()
