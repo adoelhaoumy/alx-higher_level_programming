@@ -1,1 +1,1 @@
-https://github.com/ElGaharbiAyoub/alx-higher_level_programming/raw/master/0x10-python-network_0/6-peak.txt
+O(log(n))
